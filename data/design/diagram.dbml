@@ -1,0 +1,52 @@
+
+users {
+	id integer pk increments
+	auth_id string unique
+	username string
+}
+
+sessions {
+	id integer pk increments
+	name string
+	created_by integer *> users.id
+}
+
+tunes {
+	id integer pk increments
+	databaseId integer *> databases.id
+	databaseTuneId integer
+}
+
+user_tunes {
+	user_id integer pk *> users.id
+	tune_id integer pk *> tunes.id
+	created timestamp
+	is_favorite boolean
+	status string
+}
+
+tune_names {
+	id integer pk increments
+	tune_id integer *> tunes.id
+	name string
+}
+
+tune_comments {
+	id integer pk increments
+	tune_id integer *> tunes.id
+	user_id integer *> users.id
+	comment text
+	created timestamp
+	has_abc integer
+}
+
+databases {
+	id integer pk increments
+	name string
+}
+
+user_sessions {
+	session_id integer pk *> sessions.id
+	user_id integer pk *> users.id
+}
+

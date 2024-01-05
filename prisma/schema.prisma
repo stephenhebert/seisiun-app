@@ -1,0 +1,110 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Database {
+  id           Int            @id @default(autoincrement())
+  name         String
+  databaseTune DatabaseTune[]
+}
+
+model Session {
+  id           Int           @id @default(autoincrement())
+  name         String
+  // location
+  createdBy    Int
+  userSessions UserSession[]
+}
+
+model TuneComment {
+  id        Int      @id @default(autoincrement())
+  tuneId    Int
+  userId    Int
+  comment   String
+  createdAt DateTime @db.Timestamp(6)
+  hasABC    Int
+  tune      Tune     @relation(fields: [tuneId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model TuneName {
+  id     Int    @id @default(autoincrement())
+  tuneId Int
+  name   String
+  tune   Tune   @relation(fields: [tuneId], references: [id])
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  tuneTags TuneTag[]
+}
+
+model TuneTag {
+  tuneId Int
+  tagId Int
+  tune   Tune   @relation(fields: [tuneId], references: [id])
+  tag    Tag    @relation(fields: [tagId], references: [id])
+
+  @@id(name: "id", [tuneId, tagId])
+}
+
+model Tune {
+  id            Int            @id @default(autoincrement())
+  tuneComments  TuneComment[]
+  tuneNames     TuneName[]
+  tuneTags      TuneTag[]
+  databaseTunes DatabaseTune[]
+  userTunes     UserTune[]
+}
+
+model DatabaseTune {
+  databaseId     Int
+  databaseTuneId Int
+  tuneId         Int
+  database       Database @relation(fields: [databaseId], references: [id])
+  tune           Tune     @relation(fields: [tuneId], references: [id])
+
+  @@id(name: "id", [databaseId, databaseTuneId])
+}
+
+model UserSession {
+  sessionId Int
+  userId    Int
+  session   Session @relation(fields: [sessionId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@id(name: "id", [sessionId, userId])
+}
+
+model UserTune {
+  userId     Int
+  tuneId     Int
+  createdAt  DateTime @db.Timestamp(6) @default(now())
+  isFavorite Boolean
+  status     Int
+  user       User     @relation(fields: [userId], references: [id])
+  tune       Tune     @relation(fields: [tuneId], references: [id])
+
+  @@id(name: "id", [userId, tuneId])
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  clerkId      String        @unique
+  name         String
+  tuneComments TuneComment[]
+  userSession  UserSession[]
+  userTunes    UserTune[]
+}

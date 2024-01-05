@@ -1,0 +1,128 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Database {
+  id Int [pk, increment]
+  name String [not null]
+  databaseTune DatabaseTune [not null]
+}
+
+Table Session {
+  id Int [pk, increment]
+  name String [not null]
+  createdBy Int [not null]
+  userSessions UserSession [not null]
+}
+
+Table TuneComment {
+  id Int [pk, increment]
+  tuneId Int [not null]
+  userId Int [not null]
+  comment String [not null]
+  createdAt DateTime [not null]
+  hasABC Int [not null]
+  tune Tune [not null]
+  user User [not null]
+}
+
+Table TuneName {
+  id Int [pk, increment]
+  tuneId Int [not null]
+  name String [not null]
+  tune Tune [not null]
+}
+
+Table Tag {
+  id Int [pk, increment]
+  name String [unique, not null]
+  tuneTags TuneTag [not null]
+}
+
+Table TuneTag {
+  tuneId Int [not null]
+  tagId Int [not null]
+  tune Tune [not null]
+  tag Tag [not null]
+
+  indexes {
+    (tuneId, tagId) [pk]
+  }
+}
+
+Table Tune {
+  id Int [pk, increment]
+  tuneComments TuneComment [not null]
+  tuneNames TuneName [not null]
+  tuneTags TuneTag [not null]
+  databaseTunes DatabaseTune [not null]
+  userTunes UserTune [not null]
+}
+
+Table DatabaseTune {
+  databaseId Int [not null]
+  databaseTuneId Int [not null]
+  tuneId Int [not null]
+  database Database [not null]
+  tune Tune [not null]
+
+  indexes {
+    (databaseId, databaseTuneId) [pk]
+  }
+}
+
+Table UserSession {
+  sessionId Int [not null]
+  userId Int [not null]
+  session Session [not null]
+  user User [not null]
+
+  indexes {
+    (sessionId, userId) [pk]
+  }
+}
+
+Table UserTune {
+  userId Int [not null]
+  tuneId Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  isFavorite Boolean [not null]
+  status Int [not null]
+  user User [not null]
+  tune Tune [not null]
+
+  indexes {
+    (userId, tuneId) [pk]
+  }
+}
+
+Table User {
+  id Int [pk, increment]
+  clerkId String [unique, not null]
+  name String [not null]
+  tuneComments TuneComment [not null]
+  userSession UserSession [not null]
+  userTunes UserTune [not null]
+}
+
+Ref: TuneComment.tuneId > Tune.id
+
+Ref: TuneComment.userId > User.id
+
+Ref: TuneName.tuneId > Tune.id
+
+Ref: TuneTag.tuneId > Tune.id
+
+Ref: TuneTag.tagId > Tag.id
+
+Ref: DatabaseTune.databaseId > Database.id
+
+Ref: DatabaseTune.tuneId > Tune.id
+
+Ref: UserSession.sessionId > Session.id
+
+Ref: UserSession.userId > User.id
+
+Ref: UserTune.userId > User.id
+
+Ref: UserTune.tuneId > Tune.id

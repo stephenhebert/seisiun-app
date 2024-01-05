@@ -1,5 +1,19 @@
+<script setup lang="ts">
+import theme from '@/theme'
+
+useHead({
+  title: 'Seisiún',
+})
+
+const { modal } = useModal()
+</script>
+
 <template>
   <div>
-    <NuxtPage />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+    <ThemeProvider :theme="theme" />
+    <ModalContainer :modal="modal" />
   </div>
 </template>
