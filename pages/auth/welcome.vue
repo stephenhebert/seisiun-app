@@ -45,9 +45,11 @@ async function createUser(form) {
         type="text"
         name="name"
         label="Your name"
+        help="This is how you'll be known on the site."
         v-model="name"
         validation="required"
         outer-class="mb-4"
+        help-class="mt-1"
       />
     </FormKit>
   </Section>
