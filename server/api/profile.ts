@@ -1,4 +1,4 @@
-import { getUser } from '~/data/repositories/users'
+import { retrieve } from '~/data/repositories/users'
 
 export default eventHandler(async (event) => {
   const { auth } = event.context
@@ -10,8 +10,10 @@ export default eventHandler(async (event) => {
     return ''
   }
 
-  const user = await getUser({
+  const user = await retrieve({
+    where: {
       clerkId
+    }
   })
 
   return user 

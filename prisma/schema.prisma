@@ -20,11 +20,14 @@ model Database {
 }
 
 model Session {
-  id           Int           @id @default(autoincrement())
-  name         String
+  id              Int           @id @default(autoincrement())
+  name            String
   // location
-  createdBy    Int
-  userSessions UserSession[]
+  createdAt       DateTime      @default(now()) @db.Timestamp(6)
+  createdBy Int
+  members    UserSession[]
+  createdByUser       User          @relation(fields: [createdBy], references: [id])
+  sessionLogs     SessionLog[]
 }
 
 model TuneComment {
@@ -32,7 +35,7 @@ model TuneComment {
   tuneId    Int
   userId    Int
   comment   String
-  createdAt DateTime @db.Timestamp(6)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
   hasABC    Int
   tune      Tune     @relation(fields: [tuneId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
@@ -46,16 +49,16 @@ model TuneName {
 }
 
 model Tag {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
   tuneTags TuneTag[]
 }
 
 model TuneTag {
   tuneId Int
-  tagId Int
-  tune   Tune   @relation(fields: [tuneId], references: [id])
-  tag    Tag    @relation(fields: [tagId], references: [id])
+  tagId  Int
+  tune   Tune @relation(fields: [tuneId], references: [id])
+  tag    Tag  @relation(fields: [tagId], references: [id])
 
   @@id(name: "id", [tuneId, tagId])
 }
@@ -67,12 +70,14 @@ model Tune {
   tuneTags      TuneTag[]
   databaseTunes DatabaseTune[]
   userTunes     UserTune[]
+  sessionLogTunes   SessionLogTune[]
 }
 
 model DatabaseTune {
   databaseId     Int
   databaseTuneId Int
   tuneId         Int
+  url            String?
   database       Database @relation(fields: [databaseId], references: [id])
   tune           Tune     @relation(fields: [tuneId], references: [id])
 
@@ -82,8 +87,9 @@ model DatabaseTune {
 model UserSession {
   sessionId Int
   userId    Int
-  session   Session @relation(fields: [sessionId], references: [id])
-  user      User    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  session   Session  @relation(fields: [sessionId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
   @@id(name: "id", [sessionId, userId])
 }
@@ -91,7 +97,7 @@ model UserSession {
 model UserTune {
   userId     Int
   tuneId     Int
-  createdAt  DateTime @db.Timestamp(6) @default(now())
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
   isFavorite Boolean
   status     Int
   user       User     @relation(fields: [userId], references: [id])
@@ -104,7 +110,42 @@ model User {
   id           Int           @id @default(autoincrement())
   clerkId      String        @unique
   name         String
+  createdAt    DateTime      @default(now()) @db.Timestamp(6)
   tuneComments TuneComment[]
-  userSession  UserSession[]
+  userSessions  UserSession[]
   userTunes    UserTune[]
+  createdSessions      Session[]
+  followedBy   UserFollow[] @relation("Followed")
+  following    UserFollow[] @relation("Follower")
+  userSessionLogs SessionLog[]
+}
+
+model UserFollow {
+  followerId Int
+  followedId Int
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  follower   User     @relation("Follower", fields: [followerId], references: [id])
+  followed   User     @relation("Followed", fields: [followedId], references: [id])
+  @@id(name: "id", [followerId, followedId])
+}
+
+model SessionLog {
+  id        Int      @id @default(autoincrement())
+  sessionId Int
+  createdBy Int
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  sessionDate DateTime @db.Date
+  session   Session  @relation(fields: [sessionId], references: [id])
+  createdByUser       User          @relation(fields: [createdBy], references: [id])
+  sessionLogTunes SessionLogTune[]
+}
+
+model SessionLogTune {
+  tuneId       Int
+  sessionLogId Int
+  order        Int
+  tune         Tune       @relation(fields: [tuneId], references: [id])
+  sessionLog   SessionLog @relation(fields: [sessionLogId], references: [id])
+
+  @@id(name: "id", [tuneId, sessionLogId])
 }

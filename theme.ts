@@ -54,7 +54,7 @@ export default {
         DEFAULT: '#ffeedd',
       },
       // add default colors
-    }
+    },
     // breakpoints?
     // z-
 }

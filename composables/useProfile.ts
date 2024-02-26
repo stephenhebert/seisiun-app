@@ -2,10 +2,17 @@ import { useStorage } from '@vueuse/core'
 import { useUser } from 'vue-clerk'
 
 export function useProfile() {
+  const { user } = useUser()
+  const clerkId = user.value?.id
+
+  if (!clerkId) {
+    return null
+  }
+
   const profile = useStorage(
-    'profile', 
+    `profile-[${clerkId}]`, 
     null, 
-    sessionStorage,
+    localStorage,
     {
       serializer: {
         read: (v: any) => (v ? JSON.parse(v) : null),
@@ -15,22 +22,14 @@ export function useProfile() {
   )
 
   if (!profile.value) {
-    const { user } = useUser()
-    const clerkId = user.value?.id
-
-    if (!clerkId) {
-      return null
-    }
-
-    const response = fetch('/api/profile')
-      .then(response => response.ok && response.json())
-      .then(data => {
-        if (!data) {
-          const router = useRouter()
-          router.push('/auth/welcome')
-        } else {
-          profile.value = data
-        }
+    fetch('/api/profile')
+      .then(response => {
+        if (response.status !== 200)
+          return navigateTo('/auth/welcome')
+        return response.json()
+      })
+      .then(data => {      
+        profile.value = data
       })
   }
 

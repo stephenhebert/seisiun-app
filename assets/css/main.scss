@@ -1,9 +1,12 @@
+@use "animations";
+@use "transitions";
+
 :root {
   --foreground-rgb: 0, 0, 0;
   /* --background-start-rgb: 214, 219, 220; */
   /* --background-end-rgb: 255, 255, 255; */
-  --background-start-rgb: 216, 199, 183;
-  --background-end-rgb: 255, 255, 255;
+  /* --background-start-rgb: 216, 199, 183; */
+  /* --background-end-rgb: 255, 255, 255; */
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -17,13 +20,14 @@
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
-      to bottom,
-      transparent,
-      var(--colors-gray-200)
-    )
-    var(--colors-white);
+    to bottom,
+    var(--colors-white),
+    var(--colors-gray-200)
+  );
 
-    min-height: 100vh;
+  min-height: 100vh;
+  @apply font-sans;
+
 }
 
 hr {

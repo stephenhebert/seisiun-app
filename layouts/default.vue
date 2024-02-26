@@ -2,8 +2,9 @@
   <div>
     <AppHeader />
     <div>
-
-      <slot />
+      <AsyncWrapper>
+        <slot />
+      </AsyncWrapper>
     </div> 
   </div>
 </template>

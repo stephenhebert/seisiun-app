@@ -8,7 +8,6 @@ const returnFocusElement = ref(null)
 function setFocus() {
   returnFocusElement.value = document.activeElement
   const firstFocusableElement = getFirstFocusableElement(modal)
-  console.log(firstFocusableElement)
   if (firstFocusableElement) {
     firstFocusableElement.focus()
   }

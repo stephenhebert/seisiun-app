@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import theme from '@/theme'
 
-useHead({
-  title: 'Seisiún',
+const { modal } = useModal()
+
+const route = useRoute()
+const computedTitle = computed(() => {
+  const title = route.meta?.title
+  return title ? `${title} | Seisiún` : 'Seisiún'
 })
 
-const { modal } = useModal()
+useHead({
+  title: computedTitle,
+})
 </script>
 
 <template>

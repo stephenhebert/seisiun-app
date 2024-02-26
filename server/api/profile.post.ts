@@ -1,4 +1,4 @@
-import { createUser } from '~/data/repositories/users'
+import { create, retrieve } from '~/data/repositories/users'
 
 export default eventHandler(async (event) => {
   const { auth } = event.context
@@ -7,18 +7,23 @@ export default eventHandler(async (event) => {
 
 
   if (!clerkId) {
-    setResponseStatus(event, 403)
-    return ''
+    return createError(403, 'Forbidden')
   }
 
-  const { name } = await readBody(event)
-
   // TODO: validation?
+  let user = await retrieve({
+    where: {
+      clerkId
+    }
+  })
   
-  const user = await createUser({
+  if (!user) {
+    const { name } = await readBody(event)
+    user = await create({
       clerkId,
       name
-  })
+    })
+  }
 
   return user 
 })
