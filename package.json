@@ -11,6 +11,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "db:studio:prod": "dotenv -e .env.prod -- npx prisma studio",
     "db:status:prod": "dotenv -e .env.prod -- npx prisma migrate status",
     "db:migrate:prod": "dotenv -e .env.prod -- npx prisma migrate deploy",
     "deploy:prod": "prisma generate && prisma migrate deploy && turbo build",
