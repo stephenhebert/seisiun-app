@@ -1,4 +1,4 @@
 {
-  "buildCommand": "pnpm turbo build",
+  "buildCommand": "pnpm deploy:prod",
   "ignoreCommand": "pnpm dlx turbo-ignore"
 }
