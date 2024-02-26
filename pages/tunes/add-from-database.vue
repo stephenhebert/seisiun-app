@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 // import { search } from '@/external/thesessionDataProvider'
 import { watchDebounced } from '@vueuse/core'
-import { theSessionDotOrgTuneToTuneCard } from '@/utils/mappers/thesessionDotOrgTuneToTuneCard'
+import { theSessionDotOrgTuneToTuneCard } from '@/utils/mappers/theSessionDotOrgTuneToTuneCard'
 
 definePageMeta({
   middleware: ['auth'],
