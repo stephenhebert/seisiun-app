@@ -12,7 +12,7 @@ const profile = useProfile()
 // TODO: tabs 
 // TODO: copy my profile link (tooltip)
 
-const activeTab = ref(tabs.SESSIONS)
+const activeTab = ref(tabs.TUNES)
 </script>
 
 <template>
@@ -27,8 +27,8 @@ const activeTab = ref(tabs.SESSIONS)
     name="slidefade"
     mode="out-in"
   >
-    <UserSessionList v-if="activeTab === tabs.SESSIONS" />
     <UserTuneList v-else-if="activeTab === tabs.TUNES" />
+    <UserSessionList v-if="activeTab === tabs.SESSIONS" />
   </Transition>
   
 
