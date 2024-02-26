@@ -1,7 +1,6 @@
 <script setup>
 definePageMeta({
-  title: 'Seisiun',
-  description: 'Find and share traditional Irish music sessions.',
+  description: 'A community for traditional music',
   layout: 'landing'
 })
 </script>
