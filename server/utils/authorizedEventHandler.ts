@@ -29,7 +29,7 @@ export const defineAuthorizedEventHandler = <T extends EventHandlerRequest, D> (
       }
     
       // validate userId 
-      const { id: userId } = await retrieve({ clerkId })
+      const { id: userId } = await retrieve({ where: {clerkId} })
       if (!userId || userId !== +headerUserId) {
         throw createError({
           statusCode: 403,
