@@ -1,19 +1,14 @@
-import { useClerk } from 'vue-clerk'
+import { useClerk, useClerkProvide } from 'vue-clerk'
+import { until } from '@vueuse/core'
 
-export default defineNuxtRouteMiddleware(() => {
-  const nuxtApp = useNuxtApp()
+export default defineNuxtRouteMiddleware(async() => {
   const clerk = useClerk()
+  const { isClerkLoaded } = useClerkProvide()
 
-  // On server, check if the user isn't authenticated
-  // and redirect to /sign-in.
-  if (
-    process.server
-    && !nuxtApp.ssrContext?.event.context.auth?.userId
-  )
-    return navigateTo('/auth/sign-in')
-
-  // On client, check if clerk is loaded and if user isn't authenticated
-  // and redirect to /sign-in.
-  if (process.client && clerk.loaded && !clerk.user?.id)
-    return navigateTo('/auth/sign-in')
+  // On client, wait for clerk to be loaded and 
+  // redirect to sign-in if user is not logged in
+  if (process.client) {
+    await until(isClerkLoaded).toBe(true)
+    if (!clerk.user?.id) return navigateTo('/auth/sign-in')
+  }
 })

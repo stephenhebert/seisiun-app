@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   },
   css: [
     '@unocss/reset/tailwind.css',
-    '~/assets/css/main.css',
+    '~/assets/css/main.scss',
   ],
   postcss: {
     plugins: {
@@ -17,11 +17,23 @@ export default defineNuxtConfig({
   },
   modules: [
     '@unocss/nuxt',
-    '@headlessui-float/nuxt'
+    '@headlessui-float/nuxt',
+    '@pinia/nuxt',
+    '@formkit/nuxt',
   ],
+  formkit: {
+    autoImport: true
+  },
   build: {
     transpile: ['vue-clerk', '@clerk/clerk-js'],
   },
+  // watchers: {
+  //   chokidar: {
+  //     include: [
+  //       './formkit.theme.ts'
+  //     ]
+  //   }
+  // },
   runtimeConfig: {
     public: {
       clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY,

@@ -1,20 +1,10 @@
 <script setup>
 const { hide } = useModal()
 
-const profile = useProfile()
+const myTunesStore = useMyTunesStore()
 
-const props = defineProps(['databaseTuneId', 'names', 'databaseId', 'callback', 'tags'])
+const props = defineProps(['databaseTuneId', 'names', 'databaseId', 'callback', 'tags', 'url'])
 const label = computed(() => `${props.names[0]} ${props.names[1] ? `(${props.names[1]})` : ''}`)
-
-const databaseOptions = [
-  // { 'TheSession.org': 'https://thesession.org/tunes' },
-  // { 'The Fiddler’s Companion': 'https://tunearch.org/wiki/TTA' },
-  // { 'The Fiddler’s Fakebook': 'https://www.fiddlefakebook.com/' }
-  { label: 'TheSession.org', value: 0 },
-
-  // 'The Fiddler’s Companion',
-  // 'The Fiddler’s Fakebook'
-]
 
 const isFavorite = ref(false)
 
@@ -24,40 +14,29 @@ const statusOptions = [
 ]
 const status = ref(0)
 
-async function addTune() {
-  console.log({
+async function addTune(resolve) {
+  await myTunesStore.addTuneFromDatabase({
     databaseId: props.databaseId,
     databaseTuneId: props.databaseTuneId,
     names: props.names,
     tags: props.tags,
     isFavorite: isFavorite.value,
-    status: status.value
+    status: status.value,
+    url: props.url
   })
-  await fetch('/api/tunes', {
-    method: 'POST',
-    headers: {
-      'Seisiun-User-Id': profile.value.id,
-      'Seisiun-Clerk-Id': profile.value.clerkId,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      databaseId: props.databaseId,
-      databaseTuneId: props.databaseTuneId,
-      names: props.names,
-      tags: props.tags,
-      isFavorite: isFavorite.value,
-      status: status.value
-    })
-  })
+  resolve()
+  hide()
 }
+
 </script>
 
 <template>
-  <BaseModal>
-    <template #header>
-      <span class="text-gray-400">Add</span> {{ label }}
-    </template>
-    <fieldset class="ml-1 flex flex-gap-x-2">
+  <div>
+    <BaseModal>
+      <template #header>
+        <span class="text-gray-400">Add</span> {{ label }}
+      </template>
+      <!-- <fieldset class="ml-1 flex flex-gap-x-2">
       <input
         type="checkbox"
         id="is_favorite"
@@ -85,15 +64,51 @@ async function addTune() {
         >
         <label>{{ label }}</label>
       </div>
-    </fieldset>
-    <template #cta>
-      <button
-        class="flex items-center justify-center bg-gray-700 p-4 text-white fw-600"
-        @click="addTune"
+    </fieldset> -->
+    
+      <FormKit
+        type="form"
+        name="add-tune"
+        :actions="false"
+        @submit="addTune"
       >
-        <!-- <div class="i-uil-plus mr-1 text-center" /> -->
-        Add
-      </button>
-    </template>
-  </BaseModal>
+        <FormKit
+          type="checkbox"
+          name="isFavorite"
+          v-model="isFavorite"
+        >
+          <template #label>
+            <span class="sr-only">Favorite</span>
+          </template>
+          <template #decorator>
+            <!-- TODO: make this a component -->
+            <div class="text-5xl">
+              <!-- <FavoriteIndicator :is-favorite="isFavorite" /> -->
+            </div>
+          </template>
+        </FormKit>
+        <!-- <FormKit
+          type="radio"
+          name="status"
+          label="Status"
+          :options="statusOptions"
+          v-model.number="status"
+        /> -->
+      </FormKit>
+      <div class="text-5xl">
+        <StatusToggleButton v-model="status" />
+      </div>
+
+
+      <template #cta>
+        <AsyncButton
+          class="flex items-center justify-center bg-gray-700 p-4 text-white fw-600"
+          @click="addTune"
+        >
+          <!-- <div class="i-uil-plus mr-1 text-center" /> -->
+          Add
+        </AsyncButton>
+      </template>
+    </BaseModal>
+  </div>
 </template>

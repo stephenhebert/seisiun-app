@@ -1,5 +1,6 @@
 // import { createTune } from '~/data/repositories/tunes'
 import prisma from '~/data/prisma'
+import { defaultInclude } from '~/data/repositories/tunes'
 
 
 export async function addTuneFromDatabase({
@@ -9,11 +10,13 @@ export async function addTuneFromDatabase({
   tuneNames,
   tuneTags,
   databaseId,
-  databaseTuneId
+  databaseTuneId,
+  databaseTuneUrl,
 }) {
 
   return prisma.$transaction(async (prisma) => {
 
+    // TODO: repository methods
     let tuneEntity = await prisma.tune.findFirst({
       where: {
         databaseTunes: {
@@ -56,6 +59,7 @@ export async function addTuneFromDatabase({
               create: {
                 databaseId,
                 databaseTuneId,
+                url: databaseTuneUrl
               }
             }
           }
@@ -63,8 +67,19 @@ export async function addTuneFromDatabase({
       })
     }
 
-    return await prisma.userTune.create({
-      data: {
+    return await prisma.userTune.upsert({
+      where: {
+        id: {
+          userId,
+          tuneId: tuneEntity.id
+        }
+      },
+      update: {
+        isFavorite: userTuneIsFavorite,
+        status: userTuneStatus,
+      },
+      // include: defaultInclude,
+      create: {
         tune: {
           connect: {
             id: tuneEntity.id
@@ -79,6 +94,7 @@ export async function addTuneFromDatabase({
           }
         },
       }
+
     })
 
   })

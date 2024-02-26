@@ -11,8 +11,11 @@ Table Database {
 Table Session {
   id Int [pk, increment]
   name String [not null]
+  createdAt DateTime [default: `now()`, not null]
   createdBy Int [not null]
-  userSessions UserSession [not null]
+  members UserSession [not null]
+  createdByUser User [not null]
+  sessionLogs SessionLog [not null]
 }
 
 Table TuneComment {
@@ -20,7 +23,7 @@ Table TuneComment {
   tuneId Int [not null]
   userId Int [not null]
   comment String [not null]
-  createdAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
   hasABC Int [not null]
   tune Tune [not null]
   user User [not null]
@@ -57,12 +60,14 @@ Table Tune {
   tuneTags TuneTag [not null]
   databaseTunes DatabaseTune [not null]
   userTunes UserTune [not null]
+  sessionLogTunes SessionLogTune [not null]
 }
 
 Table DatabaseTune {
   databaseId Int [not null]
   databaseTuneId Int [not null]
   tuneId Int [not null]
+  url String
   database Database [not null]
   tune Tune [not null]
 
@@ -74,6 +79,7 @@ Table DatabaseTune {
 Table UserSession {
   sessionId Int [not null]
   userId Int [not null]
+  createdAt DateTime [default: `now()`, not null]
   session Session [not null]
   user User [not null]
 
@@ -100,10 +106,52 @@ Table User {
   id Int [pk, increment]
   clerkId String [unique, not null]
   name String [not null]
+  createdAt DateTime [default: `now()`, not null]
   tuneComments TuneComment [not null]
-  userSession UserSession [not null]
+  userSessions UserSession [not null]
   userTunes UserTune [not null]
+  createdSessions Session [not null]
+  followedBy UserFollow [not null]
+  following UserFollow [not null]
+  userSessionLogs SessionLog [not null]
 }
+
+Table UserFollow {
+  followerId Int [not null]
+  followedId Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  follower User [not null]
+  followed User [not null]
+
+  indexes {
+    (followerId, followedId) [pk]
+  }
+}
+
+Table SessionLog {
+  id Int [pk, increment]
+  sessionId Int [not null]
+  createdBy Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  sessionDate DateTime [not null]
+  session Session [not null]
+  createdByUser User [not null]
+  sessionLogTunes SessionLogTune [not null]
+}
+
+Table SessionLogTune {
+  tuneId Int [not null]
+  sessionLogId Int [not null]
+  order Int [not null]
+  tune Tune [not null]
+  sessionLog SessionLog [not null]
+
+  indexes {
+    (tuneId, sessionLogId) [pk]
+  }
+}
+
+Ref: Session.createdBy > User.id
 
 Ref: TuneComment.tuneId > Tune.id
 
@@ -126,3 +174,15 @@ Ref: UserSession.userId > User.id
 Ref: UserTune.userId > User.id
 
 Ref: UserTune.tuneId > Tune.id
+
+Ref: UserFollow.followerId > User.id
+
+Ref: UserFollow.followedId > User.id
+
+Ref: SessionLog.sessionId > Session.id
+
+Ref: SessionLog.createdBy > User.id
+
+Ref: SessionLogTune.tuneId > Tune.id
+
+Ref: SessionLogTune.sessionLogId > SessionLog.id

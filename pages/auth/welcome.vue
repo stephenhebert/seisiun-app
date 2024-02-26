@@ -1,45 +1,54 @@
 <script setup lang="ts">
-import { useUser } from 'vue-clerk';
+import { useUser } from 'vue-clerk'
 import { ref } from 'vue'
+import { until } from '@vueuse/core'
 
 definePageMeta({
   middleware: ['auth'],
-});
+  layout: 'centered',
+})
 
-const { user } = useUser();
-const router = useRouter();
+const { user } = useUser()
 
-console.log({user})
+await until(user).toBeTruthy()
+const name = ref(user.value?.fullName)
 
-// TODO: await
-const name = ref(user.value?.fullName);
-
-async function createUser() {
-  // error handling?
+async function createUser(form) {
   const response = await fetch('/api/profile', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ name: name.value })
+    body: JSON.stringify(form)
   })
   if (response.ok) {
     // TODO: go back to returnUrl
-    router.push('/')
+    navigateTo('/')
   }
 }
 
 </script>
 
 <template>
-  <form @submit.prevent="createUser">
+  <Section>
+    <SectionHeader>
+      Welcome!
+    </SectionHeader>
 
-    <h1 class="text-3xl font-semibold">
-      Your name:
-    </h1>
-    <div class="grid lg:grid-cols-3 gap-4">
-      <input type="text" name="name" class="text-black" v-model="name" required />
-    </div>
-    <button type="submit" class="py-2 px-4 rounded bg-primary">Update</button>
-  </form>
+    <FormKit
+      type="form"
+      name="profile"
+      submit-label="Continue"
+      @submit="createUser"
+    >
+      <FormKit
+        type="text"
+        name="name"
+        label="Your name"
+        v-model="name"
+        validation="required"
+        outer-class="mb-4"
+      />
+    </FormKit>
+  </Section>
 </template>

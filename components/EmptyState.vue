@@ -1,7 +1,16 @@
+<script setup>
+const { text } = defineProps({
+  text: {
+    type: String,
+    default: 'Nothing to show here yet.'
+  }
+})
+</script>
+
 <template>
-  <div class="w-full text-center font-serif my-16 text-gray">
+  <div class="my-16 w-full text-center text-gray font-serif">
     <slot>
-      Nothing to show here yet.
+      {{ text }}
     </slot>
   </div>
 </template>

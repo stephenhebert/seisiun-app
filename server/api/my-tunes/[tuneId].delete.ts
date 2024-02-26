@@ -1,5 +1,5 @@
-import { getUser } from '~/data/repositories/users'
-import { addTuneFromDatabase } from '../services/addTuneFromDatabase'
+import { retrieve } from '~/data/repositories/users'
+import { deleteOne } from '~/data/repositories/userTunes'
 
 export default eventHandler(async (event) => {
   const { auth } = event.context
@@ -17,31 +17,24 @@ export default eventHandler(async (event) => {
   }
 
   // validate userId 
-  const { id: userId } = await getUser({ clerkId })
+  const { id: userId } = await retrieve({ clerkId })
   if (!userId || userId !== +headerUserId) {
     setResponseStatus(event, 403)
     return ''
   }
 
-  const { 
-    databaseId,
-    databaseTuneId,
-    names,
-    tags,
-    isFavorite,
-    status,
-  } = await readBody(event)
+  const tuneId = +event.context.params.tuneId
 
   // TODO: error handling
-
-  return await addTuneFromDatabase({
-    userId,
-    userTuneIsFavorite: isFavorite,
-    userTuneStatus: status,
-    tuneNames: names,
-    tuneTags: tags,
-    databaseId,
-    databaseTuneId
+  return await deleteOne({
+    where: {
+      id: {
+        userId,
+        tuneId,
+      }
+    }
   })
+
+  
 
 })

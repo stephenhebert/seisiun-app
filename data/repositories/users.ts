@@ -1,12 +1,12 @@
 import prisma from '../prisma'
 
-export async function getUsers() {
+export async function list() {
   const users = await prisma.user.findMany()
 
   return users
 }
 
-export async function getUser(where) {
+export async function retrieve({where}) {
 
   const user = await prisma.user.findUnique({
     where
@@ -15,7 +15,7 @@ export async function getUser(where) {
   return user
 }
 
-export async function createUser(data) {
+export async function create({data}) {
   const user = await prisma.user.create({
     data
   })

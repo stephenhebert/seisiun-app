@@ -1,12 +1,16 @@
 <script setup>
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { useUser } from 'vue-clerk'
+import { SignOutButton, useUser } from 'vue-clerk'
 import { toRef } from 'vue'
 const { user } = useUser()
 
 const hasUser = toRef(() => !!user.value)
 const hasImage = toRef(() => user.value?.hasImage)
 const imageUrl = toRef(() => user.value?.imageUrl)
+
+function onSignOut() {
+  navigateTo('/')
+}
 </script>
 
 <template>
@@ -32,7 +36,7 @@ const imageUrl = toRef(() => user.value?.imageUrl)
         />
       </MenuButton>
       <MenuItems
-        class="w-fit flex flex-col flex-gap-y-2 border-1 border-gray-600 rounded bg-white py-2 shadow-lg"
+        class="w-fit flex flex-col flex-gap-y-2 border-1 border-gray-600 rounded bg-white py-2 text-gray-500 shadow-xl"
         @click="close"
       >
         <MenuItem
@@ -41,7 +45,7 @@ const imageUrl = toRef(() => user.value?.imageUrl)
           <NuxtLink to="/profile">
             <div
               class="flex items-center px-4 py-2"
-              :class="{'bg-gray-200': active}"
+              :class="{'bg-zinc-100 text-gray-900': active}"
             >
               <div class="i-uil-user mr-2 text-16px" />
               <span>Profile</span>
@@ -51,25 +55,25 @@ const imageUrl = toRef(() => user.value?.imageUrl)
         <MenuItem 
           v-slot="{ active }"
         >
-          <NuxtLink to="/auth/sign-out">
+          <SignOutButton @click="onSignOut">
             <div 
               class="flex items-center px-4 py-2"
-              :class="{'bg-gray-200': active}"
+              :class="{'bg-zinc-100 text-gray-900': active}"
             >
               <div class="i-uil-sign-out-alt mr-2 text-16px" />
               <span>Sign Out</span>
             </div>
-          </NuxtLink>
+          </SignOutButton>
         </MenuItem>
       </MenuItems>
     </Float>
   </Menu>
-  <NuxtLink
+  <a
     v-else
-    to="/auth/sign-in"
+    href="/auth/sign-in"
   >
     <button class="i-uil-sign-in-alt text-36px">
       <span class="sr-only">Sign In</span>
     </button>
-  </NuxtLink>
+  </a>
 </template>
