@@ -20,8 +20,10 @@ export default eventHandler(async (event) => {
   if (!user) {
     const { name } = await readBody(event)
     user = await create({
-      clerkId,
-      name
+      data: {
+        clerkId,
+        name
+      }
     })
   }
 
