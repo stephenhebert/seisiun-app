@@ -27,8 +27,8 @@ const activeTab = ref(tabs.TUNES)
     name="slidefade"
     mode="out-in"
   >
-    <UserTuneList v-else-if="activeTab === tabs.TUNES" />
-    <UserSessionList v-if="activeTab === tabs.SESSIONS" />
+    <UserTuneList v-if="activeTab === tabs.TUNES" />
+    <UserSessionList v-else-if="activeTab === tabs.SESSIONS" />
   </Transition>
   
 
