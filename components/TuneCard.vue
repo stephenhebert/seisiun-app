@@ -1,5 +1,5 @@
 <script setup>
-import { getUrlLabel } from '~/utils/getUrlLabel'
+import getUrlLabel from '~/utils/getUrlLabel'
 
 const myTunesStore = useMyTunesStore()
 

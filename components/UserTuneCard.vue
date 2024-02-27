@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 const { updateTuneFavorite, updateTuneStatus, removeTune } = useMyTunesStore()
-import { getUrlLabel } from '~/utils/getUrlLabel'
+import getUrlLabel from '~/utils/getUrlLabel'
 
 const props = defineProps(['isFavorite', 'status', 'tune', 'tuneId'])
 
