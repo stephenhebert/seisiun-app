@@ -1,51 +1,55 @@
 <script setup>
+const { tunes } = defineProps(['tunes'])
 
 // const myTunesStore = useMyTunesStore()
 // const { myTunes, isLoading } = storeToRefs(myTunesStore)
-// const sortBy = ref('name')
+const sortBy = ref('name')
 
-// function trimName(name) {
-//   if (name.match(/^(a|the) /i)) {
-//     return name.replace(/^(a|the) /i, '')
-//   }
-//   return name
-// }
+function trimName(name) {
+  if (name.match(/^(a|the) /i)) {
+    return name.replace(/^(a|the) /i, '')
+  }
+  return name
+}
 
-// function sortByName(a, b) {
-//   return trimName(a.tune.tuneNames[0]).localeCompare(trimName(b.tune.tuneNames[0]))
-// }
+function score(tune) {
+  return (tune.plays * 2) + tune.wantsToPlay
+}
 
-// const sortFunctions = {
-//   status: (a, b) => {
-//     if (a.status === b.status) {
-//       return sortByName(a, b)
-//     }
-//     return a.status - b.status
-//   },
-//   name: sortByName,
-//   favorite: (a, b) => {
-//     if (a.isFavorite === b.isFavorite) {
-//       return sortByName(a, b)
-//     }
-//     if (a.isFavorite === b.isFavorite )return 0
-//     if (a.isFavorite)  return -1
-//     else return 1
-//   },
-//   createdAt: (a, b) => {
-//     if (a.createdAt === b.createdAt) {
-//       return sortByName(a, b)
-//     }
-//     return a.createdAt > b.createdAt ? -1 : 1
-//   }
-// }
+function sortByName(a, b) {
+  return trimName(a.tuneNames[0]).localeCompare(trimName(b.tuneNames[0]))
+}
 
-// const sortedTunes = computed(() => {
-//   return myTunes.value.sort(sortFunctions[sortBy.value])
-// })
+const sortFunctions = {
+  name: sortByName,
+  status: (a, b) => {
+    const aScore = score(a)
+    const bScore = score(b)
+    if (aScore === bScore) {
+      return sortByName(a, b)
+    }
+    return bScore - aScore
+  },
+  favorite: (a, b) => {
+    if (a.favorites === b.favorites) {
+      return sortByName(a, b)
+    }
+    return b.favorites - a.favorites
+  },
+}
 
+const tuneQuery = ref('')
 
-// TODO: sorting, filtering?
-defineProps(['tunes'])
+const filteredTunes = computed(() => {
+  return !tuneQuery.value ? tunes : tunes.filter(tune => {
+    return tune.tuneNames.some(name => name.toLowerCase().includes(tuneQuery.value.toLowerCase()))
+  })
+})
+
+const sortedTunes = computed(() => {
+  return filteredTunes.value.sort(sortFunctions[sortBy.value])
+})
+
 
 const newTuneAdded = ref(false)
 
@@ -69,11 +73,50 @@ function onAdded() {
         <span>profile</span>
       </router-link>.
     </div>
-    <TuneCard
-      v-for="tune in tunes"
-      :key="tune.id"
-      v-bind="{...tune}"
-      @added="onAdded"
-    />
+    <template v-if="tunes.length">
+      <div class="flex justify-between flex-gap-4 lt-sm:(flex-col) sm:(items-center)">
+        <FormKit
+          type="text"
+          name="query"
+          v-model="tuneQuery"
+        >
+          <template #label>
+            <span class="sr-only">
+              Query
+            </span>
+          </template>
+          <template #prefixIcon>
+            <div class="mr-4">
+              <div class="i-uil-search" />
+            </div>
+          </template>
+        </FormKit>
+        <SortByControl
+          hide-created-at
+          v-model="sortBy"
+        />
+      </div>
+
+      <TransitionGroup name="list">
+        <TuneCard
+          v-for="tune in sortedTunes"
+          :key="tune.id"
+          v-bind="{...tune}"
+          @added="onAdded"
+        />
+      </TransitionGroup>
+    </template>
   </div>
 </template>
+
+<style scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+</style>

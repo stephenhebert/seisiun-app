@@ -121,7 +121,10 @@ onMounted(() => {
       </template>
     </Transition>
 
-    <template #actions>
+    <template
+      #actions
+      v-if="myTunesStore"
+    >
       <button
         v-if="currentStep === step.ADD"
         class="flex p-1 text-gray-400 hover:text-gray-700"

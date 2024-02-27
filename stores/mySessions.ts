@@ -1,6 +1,5 @@
 import { useLocalStorage } from '@vueuse/core'
 import { useUser } from 'vue-clerk'
-import { createSession } from '~/server/services/createSession'
 
 const sessionsStores = new Map()
 
@@ -134,6 +133,12 @@ function defineSessionsStore(clerkId: string) {
       //     || (userTune.tune.databaseTunes.some(databaseTune => databaseId === databaseTune.databaseId && databaseTune.databaseTuneId === databaseTuneId))
       //   )
       // }
+
+      const isMember = ({ sessionId }) => {
+        return mySessions.value.some(userSession =>
+          userSession.sessionId === sessionId
+        )
+      }
   
       if (mySessions.value?.length === 0) {
         load()
@@ -147,6 +152,7 @@ function defineSessionsStore(clerkId: string) {
         error,
         load,
         createSession,
+        isMember,
         // addTuneFromDatabase,
         // addTune,
         // removeTune,

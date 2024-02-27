@@ -31,13 +31,13 @@ async function onSave() {
 
 }
 
-// onMounted(() => {
-//   if (myTunesStore?.isInLibrary({
-//     tuneId: props.id
-//   })) {
-//     currentStep.value = step.SAVED
-//   }
-// })
+onMounted(() => {
+  if (mySessionsStore?.isMember({
+    sessionId: props.id
+  })) {
+    currentStep.value = step.JOINED
+  }
+})
 </script>
 
 <template>
@@ -67,18 +67,21 @@ async function onSave() {
       /> -->
     </div>
 
-    <template #actions>
+    <template 
+      #actions 
+      v-if="mySessionsStore"
+    >
       <button
         v-if="currentStep === step.JOIN"
-        class="flex p-1 text-gray-400 hover:text-gray-700"
+        class="flex p-1 text-gray-400 hover:text-green-700"
         @click="onJoin"
       >
-        <div class="i-uil-plus text-4xl" />
+        <div class="i-fa6-solid-handshake text-2xl" />
         <span class="sr-only">Join</span>
       </button>
 
       <div 
-        v-else-if="currentStep = step.SAVING"
+        v-else-if="currentStep === step.SAVING"
         class="p-1"
       >
         <div class="i-uil-sync animate-spin-reverse text-3xl" />
@@ -87,10 +90,10 @@ async function onSave() {
 
       <button
         v-else-if="currentStep === step.JOINED"
-        class="p-1 text-gray-300 hover:text-green-500"
+        class="p-1 text-gray-300 hover:text-red-500"
         @click="onLeave"
       >
-        <div class="i-uil-check text-4xl" />
+        <div class="i-fa6-solid-hands text-2xl" />
         <span class="sr-only">Leave</span>
       </button>
     </template>

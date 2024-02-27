@@ -8,6 +8,9 @@ dependencies:
   '@formkit/nuxt':
     specifier: ^1.4.0
     version: 1.4.0(typescript@5.3.3)(vite@5.0.10)(webpack@5.89.0)
+  '@formkit/tempo':
+    specifier: ^0.0.13
+    version: 0.0.13
   '@headlessui-float/nuxt':
     specifier: ^0.13.0
     version: 0.13.0(vue@3.4.3)
@@ -1179,6 +1182,10 @@ packages:
       '@formkit/core': 1.4.0
       '@formkit/utils': 1.4.0
       '@formkit/validation': 1.4.0
+    dev: false
+
+  /@formkit/tempo@0.0.13:
+    resolution: {integrity: sha512-DV13jzjwcjvIqQh1j7MJikd8s7+/bIqKB65zJObUszlIzE22YwLcoPqhB+qLwGtcAxTRTD5Ofy5DFTGW1FQpnA==}
     dev: false
 
   /@formkit/themes@1.4.0:
