@@ -6,13 +6,13 @@ const activeTab = defineModel()
 <template>
   <div class="mb-6 flex items-center justify-center gap-4 b-1 bg-zinc-100 p-4">
     <button
-      :class="{ 'fw-600': activeTab === tabs.TUNES }"
+      :class="{ 'fw-700': activeTab === tabs.TUNES }"
       @click="activeTab = tabs.TUNES"    
     >
       <span>Your Tunes</span>
     </button>
     <button 
-      :class="{ 'fw-600': activeTab === tabs.SESSIONS }"
+      :class="{ 'fw-700': activeTab === tabs.SESSIONS }"
       class="flex items-center gap-1"
       @click="activeTab = tabs.SESSIONS"
     >

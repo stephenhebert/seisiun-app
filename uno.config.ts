@@ -21,7 +21,7 @@ export default defineConfig({
         title: 'Julius Sans One',
         heading: 'Arvo',
         serif: 'Bitter',
-        sans: 'Open Sans',
+        sans: 'Open Sans:400,600,700',
         // pixel: 'Silkscreen',
       },
     })
