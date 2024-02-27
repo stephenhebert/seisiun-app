@@ -1,4 +1,6 @@
 <script setup>
+import { getUrlLabel } from '~/utils/getUrlLabel'
+
 const myTunesStore = useMyTunesStore()
 
 const emit = defineEmits(['added'])
@@ -90,7 +92,7 @@ onMounted(() => {
         class="link flex items-center gap-1 text-gray-400 font-sans lt-sm:text-xs sm:text-sm"
       >
         <span class="i-uil-external-link-alt" />
-        <span>{{ databaseTune.url }}</span>
+        <span>{{ getUrlLabel(databaseTune.url) }}</span>
       </a>
       <TuneStats 
         :tune="{ 

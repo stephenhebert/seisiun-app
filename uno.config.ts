@@ -33,6 +33,8 @@ export default defineConfig({
   theme,
   shortcuts: {
     'text-md': 'text-16px',
+    'text-2xs': 'text-10px',
+    'text-3xs': 'text-8px',
     'label': 'mb-1 text-sm text-zinc-800 fw-600 font-sans',
     'input': 'border-1 border-zinc-600 rounded p-2 font-serif',
     'heading': 'font-heading text-zinc-700 fw-700',

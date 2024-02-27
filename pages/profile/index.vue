@@ -10,7 +10,6 @@ definePageMeta({
 
 const profile = useProfile()
 // const { modal } = useModal()
-// TODO: copy my profile link (tooltip)
 
 const { copy, copied } = useClipboard()
 
@@ -20,15 +19,15 @@ const profileUrl = computed(() => window.location.origin + `/users/${profile.val
 
 <template>
   <Section>
-    <div class="text-heading mt-4 flex items-center justify-center gap-2 text-xl font-serif">
-      <span>👋 Hi,</span> 
-      <span class="text-primary text-3xl fw-500">{{ profile?.name }}</span>
+    <div class="text-heading mt-4 flex items-center justify-center gap-2 font-serif">
+      <span class="lt-sm:text-lg sm:text-xl">👋 Hi,</span> 
+      <span class="text-primary fw-500 lt-sm:text-xl sm:text-3xl">{{ profile?.name }}</span>
       <button
         class="relative"
         @click="copy(profileUrl)"
       >
         <div 
-          class="i-fa6-solid-link text-xl text-zinc-200 hover:bg-zinc-700"
+          class="i-fa6-solid-link text-zinc-200 hover:bg-zinc-700 lt-sm:text-lg sm:text-xl"
         />
         <div 
           v-if="copied"

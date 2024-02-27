@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 const { updateTuneFavorite, updateTuneStatus, removeTune } = useMyTunesStore()
+import { getUrlLabel } from '~/utils/getUrlLabel'
 
 const props = defineProps(['isFavorite', 'status', 'tune', 'tuneId'])
 
@@ -22,7 +23,7 @@ async function onDelete() {
         <span class="text-4xl text-white fw-600 font-heading">Remove?</span>
       </div>
       <div
-        class="flex flex-col justify-between flex-gap-y-2 p-4 pr-0"
+        class="flex flex-col justify-between flex-gap-y-2 overflow-hidden p-4 pr-0"
         :class="{'opacity-20': isDeleting}"
       >
         <div class="grow">
@@ -44,8 +45,8 @@ async function onDelete() {
           target="_blank"
           class="link flex items-center gap-1 text-gray-400 font-sans lt-sm:text-xs sm:text-sm"
         >
-          <span class="i-uil-external-link-alt" />
-          <span>{{ databaseTune.url }}</span>
+          <span class="i-uil-external-link-alt shrink-0" />
+          <span class="truncate">{{ getUrlLabel(databaseTune.url) }}</span>
         </a>
         <TuneStats 
           :tune="props.tune"
