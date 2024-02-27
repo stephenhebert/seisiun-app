@@ -1,7 +1,8 @@
 <script setup>
+import { useProfile } from '@/composables/useProfile'
 // const myTunesStore = useMyTunesStore()
 // const mySocialStore = useMySocialStore()
-
+const profile = useProfile()
 
 const props = defineProps({
   id: Number,
@@ -10,8 +11,7 @@ const props = defineProps({
 })
 
 const isSelf = computed(() => {
-  return false
-  return mySocialStore.state.user.id === props.id
+  return profile?.value.id === props.id
 })
 </script>
 
@@ -28,7 +28,7 @@ const isSelf = computed(() => {
           <span class="sr-only">Open in new tab</span>
         </div> -->
       <router-link
-        :to="`/users/${props.id}`"
+        :to="isSelf ? '/profile' : `/users/${props.id}`"
         class="link"
       >
         <span
