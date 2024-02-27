@@ -1,7 +1,11 @@
 <script setup>
+const props = defineProps({
+  hideCreatedAt: Boolean,
+})
+
 const sortBy = defineModel()
 
-const sortByOptions = [
+const sortByOptions = computed(() => [
   {
     label: 'Name',
     value: 'name',
@@ -17,12 +21,12 @@ const sortByOptions = [
     value: 'status',
     icon: 'i-fa6-solid-book',
   },
-  {
+  ...(!props.hideCreatedAt ? [{
     label: 'Date',
     value: 'createdAt',
     icon: 'i-fa6-solid-clock',
-  },
-]
+  }] : []),
+])
 </script>
 
 <template>
